@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "533039699998",
+    "project_id": "truckpenny-1ad66",
+    "storage_bucket": "truckpenny-1ad66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533039699998:android:51cdb08ce1e0dbddbc360f",
+        "android_client_info": {
+          "package_name": "com.example.truckpenny"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfDYhPz9OwSBWkW_xMwDVo6hGEQxYWwBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

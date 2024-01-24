@@ -1,18 +1,74 @@
+
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-class TopNeuCard extends StatelessWidget {
-  final String balance;
-  final String income;
-  final String expense;
+class TopNeuCard extends StatefulWidget {
 
-  TopNeuCard({
-    required this.balance,
-    required this.expense,
-    required this.income,
-  });
+
+  TopNeuCard({Key? key}) : super(key: key);
+
+  @override
+  State<TopNeuCard> createState() => _TopNeuCardState();
+}
+
+class _TopNeuCardState extends State<TopNeuCard> {
+  final databaseTotalAmountRef = FirebaseDatabase.instance.ref('TotalAmount').child('totalAmount');
+  final databaseIncomeAmountRef = FirebaseDatabase.instance.ref('IncomeAmount').child('incomeAmount');
+  final databaseExpenseAmountRef =
+      FirebaseDatabase.instance.ref('ExpenseAmount').child('expenseAmount');
+
+  String balance = "0";
+  String income = "0";
+  String expense = "0";
+
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch initial data
+    fetchData();
+
+    // Set up listeners for real-time updates
+    databaseTotalAmountRef.onValue.listen((event) {
+      setState(() {
+        balance = event.snapshot.value.toString();
+      });
+    });
+
+    databaseIncomeAmountRef.onValue.listen((event) {
+      setState(() {
+        income = event.snapshot.value.toString();
+      });
+    });
+
+    databaseExpenseAmountRef.onValue.listen((event) {
+      setState(() {
+        expense = event.snapshot.value.toString();
+      });
+    });
+  }
+
+  Future<void> fetchData() async {
+    // Fetch initial data
+    final totalAmountSnapshot = await databaseTotalAmountRef.once();
+    final incomeAmountSnapshot = await databaseIncomeAmountRef.once();
+    final expenseAmountSnapshot = await databaseExpenseAmountRef.once();
+
+    setState(() {
+      balance = totalAmountSnapshot.snapshot.value.toString();
+      income = incomeAmountSnapshot.snapshot.value.toString();
+      expense = expenseAmountSnapshot.snapshot.value.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // print("=================================== ${balance}");
+
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
@@ -24,7 +80,7 @@ class TopNeuCard extends StatelessWidget {
               Text('B A L A N C E',
                   style: TextStyle(color: Colors.grey[500], fontSize: 16)),
               Text(
-                '\$' + balance,
+                '\$ ${balance}',
                 style: TextStyle(color: Colors.grey[800], fontSize: 40),
               ),
               Padding(
@@ -58,7 +114,7 @@ class TopNeuCard extends StatelessWidget {
                             SizedBox(
                               height: 5,
                             ),
-                            Text('\$' + income,
+                            Text('\$ ${income}' ,
                                 style: TextStyle(
                                     color: Colors.grey[600],
                                     fontWeight: FontWeight.bold)),
@@ -92,7 +148,7 @@ class TopNeuCard extends StatelessWidget {
                             SizedBox(
                               height: 5,
                             ),
-                            Text('\$' + expense,
+                            Text('\$ ${expense}',
                                 style: TextStyle(
                                     color: Colors.grey[600],
                                     fontWeight: FontWeight.bold)),
