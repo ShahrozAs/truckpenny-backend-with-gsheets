@@ -1,12 +1,9 @@
-
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class TopNeuCard extends StatefulWidget {
-
-
   TopNeuCard({Key? key}) : super(key: key);
 
   @override
@@ -14,17 +11,16 @@ class TopNeuCard extends StatefulWidget {
 }
 
 class _TopNeuCardState extends State<TopNeuCard> {
-  final databaseTotalAmountRef = FirebaseDatabase.instance.ref('TotalAmount').child('totalAmount');
-  final databaseIncomeAmountRef = FirebaseDatabase.instance.ref('IncomeAmount').child('incomeAmount');
+  final databaseTotalAmountRef =
+      FirebaseDatabase.instance.ref('TotalAmount').child('totalAmount');
+  final databaseIncomeAmountRef =
+      FirebaseDatabase.instance.ref('IncomeAmount').child('incomeAmount');
   final databaseExpenseAmountRef =
       FirebaseDatabase.instance.ref('ExpenseAmount').child('expenseAmount');
 
   String balance = "0";
   String income = "0";
   String expense = "0";
-
-
-
 
   @override
   void initState() {
@@ -114,7 +110,7 @@ class _TopNeuCardState extends State<TopNeuCard> {
                             SizedBox(
                               height: 5,
                             ),
-                            Text('\$ ${income}' ,
+                            Text('\$ ${income}',
                                 style: TextStyle(
                                     color: Colors.grey[600],
                                     fontWeight: FontWeight.bold)),

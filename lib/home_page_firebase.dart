@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:truckpenny/create_bottomSheet.dart';
 import 'google_sheets_api.dart';
@@ -15,6 +17,7 @@ class HomePageFirebase extends StatefulWidget {
 }
 
 class _HomePageFirebaseState extends State<HomePageFirebase> {
+  final databaseRef = FirebaseDatabase.instance.ref('Amount');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,14 +29,7 @@ class _HomePageFirebaseState extends State<HomePageFirebase> {
             SizedBox(
               height: 30,
             ),
-            TopNeuCard(
-              // balance: (GoogleSheetsApi.calculateIncome() -
-              //         GoogleSheetsApi.calculateExpense())
-              //     .toString(),
-              // income: GoogleSheetsApi.calculateIncome().toString(),
-              // expense: GoogleSheetsApi.calculateExpense().toString(),
-            ),
-
+            TopNeuCard(),
             Expanded(
               child: Container(
                 child: Center(
@@ -42,23 +38,84 @@ class _HomePageFirebaseState extends State<HomePageFirebase> {
                       SizedBox(
                         height: 20,
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text('Date'),
+                          Text('Vehicle Details'),
+                          Text('Weight'),
+                          Text('Rate'),
+                          Text('Amount'),
+                          Text('B/N'),
+                          Text('Received'),
+                        ],
+                      ),
                       Expanded(
-                        child: GoogleSheetsApi.loading == true
-                            ? LoadingCircle()
-                            : ListView.builder(
-                                itemCount:
-                                    GoogleSheetsApi.currentTransactions.length,
-                                itemBuilder: (context, index) {
-                                  return MyTransaction(
-                                    transactionName: GoogleSheetsApi
-                                        .currentTransactions[index][0],
-                                    money: GoogleSheetsApi
-                                        .currentTransactions[index][1],
-                                    expenseOrIncome: GoogleSheetsApi
-                                        .currentTransactions[index][2],
-                                  );
-                                }),
-                      )
+                          child: FirebaseAnimatedList(
+                        query: databaseRef,
+                        itemBuilder: (context, snapshot, animation, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Container(
+                              height: 70,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(snapshot.child('date').value.toString()),
+                                  Text(snapshot
+                                      .child('vehicleDetails')
+                                      .value
+                                      .toString()),
+                                  Text(snapshot
+                                      .child('weight')
+                                      .value
+                                      .toString()),
+                                  Text(snapshot.child('rate').value.toString()),
+                                  Text(snapshot
+                                      .child('amount')
+                                      .value
+                                      .toString()),
+                                  Text(snapshot.child('BN').value.toString()),
+                                  Text(snapshot
+                                      .child('received')
+                                      .value
+                                      .toString()),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )),
+                      // Expanded(
+                      //   child: Container(
+                      //     child: Center(
+                      //       child: Column(
+                      //         children: [
+                      //           SizedBox(
+                      //             height: 20,
+                      //           ),
+                      //           Expanded(
+                      //             child: GoogleSheetsApi.loading == true
+                      //                 ? LoadingCircle()
+                      //                 : ListView.builder(
+                      //                     itemCount:
+                      //                         GoogleSheetsApi.currentTransactions.length,
+                      //                     itemBuilder: (context, index) {
+                      //                       return MyTransaction(
+                      //                         transactionName: GoogleSheetsApi
+                      //                             .currentTransactions[index][0],
+                      //                         money: GoogleSheetsApi
+                      //                             .currentTransactions[index][1],
+                      //                         expenseOrIncome: GoogleSheetsApi
+                      //                             .currentTransactions[index][2],
+                      //                       );
+                      //                     }),
+                      //           )
                     ],
                   ),
                 ),
@@ -87,7 +144,6 @@ class _HomePageFirebaseState extends State<HomePageFirebase> {
                 ),
               ),
             ),
-
           ],
         ),
       ),
